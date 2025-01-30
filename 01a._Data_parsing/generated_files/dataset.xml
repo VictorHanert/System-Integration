@@ -1,0 +1,27 @@
+<brands>
+  <brand>
+    <name>Apple</name>
+    <country>USA</country>
+    <it_areas>Smartphones, Laptops, Tablets, Wearables, Cloud Services</it_areas>
+  </brand>
+  <brand>
+    <name>Samsung</name>
+    <country>South Korea</country>
+    <it_areas>Smartphones, Tablets, TVs, Semiconductors, Wearables</it_areas>
+  </brand>
+  <brand>
+    <name>Microsoft</name>
+    <country>USA</country>
+    <it_areas>Software, Cloud Services, Gaming, Laptops, AI</it_areas>
+  </brand>
+  <brand>
+    <name>Huawei</name>
+    <country>China</country>
+    <it_areas>Smartphones, Networking Equipment, Tablets, AI, Cloud Services</it_areas>
+  </brand>
+  <brand>
+    <name>Sony</name>
+    <country>Japan</country>
+    <it_areas>Gaming, TVs, Cameras, Smartphones, Audio Equipment</it_areas>
+  </brand>
+</brands>
