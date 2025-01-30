@@ -1,0 +1,13 @@
+name: Victor
+age: 24
+hobbies:
+  - Coding
+  - Football
+  - Cooking
+  - Running
+coding-skills:
+  - Python
+  - Java
+  - Node.js
+  - PHP
+  - Laravel
