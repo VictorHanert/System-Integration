@@ -1,0 +1,40 @@
+- name: Apple
+  country: USA
+  it_areas:
+    - Smartphones
+    - Laptops
+    - Tablets
+    - Wearables
+    - Cloud Services
+- name: Samsung
+  country: South Korea
+  it_areas:
+    - Smartphones
+    - Tablets
+    - TVs
+    - Semiconductors
+    - Wearables
+- name: Microsoft
+  country: USA
+  it_areas:
+    - Software
+    - Cloud Services
+    - Gaming
+    - Laptops
+    - AI
+- name: Huawei
+  country: China
+  it_areas:
+    - Smartphones
+    - Networking Equipment
+    - Tablets
+    - AI
+    - Cloud Services
+- name: Sony
+  country: Japan
+  it_areas:
+    - Gaming
+    - TVs
+    - Cameras
+    - Smartphones
+    - Audio Equipment
