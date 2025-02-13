@@ -19,6 +19,11 @@ app.get('/requestFastAPIData', async (req, res) => {
   }
 });
 
+app.get('/names/:name', (req, res) => {
+  console.log(req.params.name);
+  res.send({ data: `Your name is ${req.params.name}` });
+});
+
 // sætter serveren til at lytte på port 8080
 const PORT = 8080;
 app.listen(PORT, () => {

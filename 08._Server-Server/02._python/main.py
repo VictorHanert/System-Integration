@@ -18,7 +18,8 @@ def getFastAPIData():
 
 @app.get("/requestExpressData")
 def getRequestExpressData():
-    response = requests.get("http://127.0.0.1:8080/expressData")
+    # Latif til eksamen: Hvor sker integrationen?
+    response = requests.get("http://127.0.0.1:8080/expressData") # <-- Her sker integrationen
     data = response.json()
     data['data'] += ' - loaded from other server in FastAPI'
     return data
