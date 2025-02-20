@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Short Polling</title>
+        <script src="app.js"></script>
+    </head>
+    <body>
+        <h1>Short Polling</h1>
+
+        <div id="random"></div>
+
+        <div id="statistics">
+            <h2>Statistics</h2>
+            <div id="average"></div>
+            <div id="min"></div>
+            <div id="max"></div>
+        </div>
+
+        <script>
+            const randomDiv = document.getElementById("random");
+            const responses = [];
+
+            const DELAY = 100;
+
+            async function poll() {
+                const response = await fetch("/random");
+                const result = await response.json();
+                responses.push(result.data);
+                randomDiv.textContent = responses.join(", ");
+            }
+            setInterval(poll, DELAY);
+        </script>
+    </body>
+</html>
