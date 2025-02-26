@@ -18,10 +18,18 @@ psql --version
 
 ### Access the Database
 
-When the ngrok server is running (setup by Victor running ngrok tcp 5432), use the following command to access the database. Replace `{ROLE}` with the appropriate role and enter the corresponding password when prompted:
+When the ngrok server is running (setup by Victor running ngrok tcp 5432), ask for the URL and port to access the database. 
+(The URL and port are different for each time the ngrok server is started.)
+
+But it wil look like this:
+```bash
+psql -d granular_access_db -h 0.tcp.eu.ngrok.io -p 17577 -U admin
+```
 
 ```bash
-psql -h 2.tcp.eu.ngrok.io -U {ROLE} -d granular_access_db -p 10732
+-h {NGROK_URL}
+-p {NGROK_PORT}
+-U {ROLE}
 ```
 
 **Available Roles and Passwords:**
@@ -38,6 +46,8 @@ To see the current user logged in, execute:
 ```sql
 SELECT current_user;
 ```
+
+For logging in as a different user you need to quit the session with: **\q** - and then login with the new user.
 
 ### Role Access Levels
 
