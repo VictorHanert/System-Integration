@@ -18,6 +18,7 @@ app.get("/synctime", (req, res) => {
 function sendTimeToClient(res) {
   const time = new Date().toISOString();
   res.write(`data: ${time} \n\n`);
+  // Skal starte med "data: " og slutte med " \n\n" for at det sendes med det samme og det korrekte format.
 }
 
 // Der er 3 steder man kan oprette en connection til serveren:
