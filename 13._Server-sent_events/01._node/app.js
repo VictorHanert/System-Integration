@@ -21,7 +21,7 @@ function sendTimeToClient(res) {
 }
 
 // Der er 3 steder man kan oprette en connection til serveren:
-// 1. Fra en browser
+// 1. Fra en browser (HTML / frontend)
 // 2. Fra en konsol i browseren
 // 3. Fra en API-klient fx. Postman
 
