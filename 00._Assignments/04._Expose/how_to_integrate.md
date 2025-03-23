@@ -23,7 +23,7 @@ When the ngrok server is running (setup by Victor running ngrok tcp 5432), ask f
 
 But it wil look like this:
 ```bash
-psql -d granular_access_db -h 0.tcp.eu.ngrok.io -p 17577 -U admin
+psql -d granular_access_db -h 4.tcp.eu.ngrok.io -p 16331 -U admin
 ```
 
 ```bash
