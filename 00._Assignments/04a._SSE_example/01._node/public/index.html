@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEE</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="text-center bg-gradient-to-r from-gray-100 to-gray-400 text-gray-700">
+    <h1 class="text-3xl my-10">
+        Server-sent Events
+    </h1>
+
+    <p>Status:</p>
+    <div class="bg-white text-black p-2 rounded-sm shadow-xl border mx-20 mb-5" id="server-sent_status">
+    </div>
+
+    <p>Time:</p>
+    <div class="bg-white text-black p-2 rounded-sm shadow-xl border mx-20" id="server-sent_time">
+    </div>
+
+    <script>
+        const serverSentStatusDiv = document.getElementById('server-sent_status');
+        const serverSentTimeDiv = document.getElementById('server-sent_time');
+
+        const eventSource = new EventSource('/synctime');
+
+        eventSource.addEventListener("message", (event) => {
+            serverSentTimeDiv.textContent = event.data;
+        });
+
+        eventSource.addEventListener("open", (event) => {
+            serverSentStatusDiv.textContent = 'Connected ✅';
+        });
+
+        eventSource.addEventListener("error", (event) => {
+            if (event.target.readyState === EventSource.CONNECTING) {
+                serverSentStatusDiv.textContent = 'Reconnecting... 🛜';
+            } else if (event.target.readyState === EventSource.CLOSED) {
+                serverSentStatusDiv.textContent = 'Disconnected ❌';
+                serverSentTimeDiv.textContent = 'Can\'t connect to server';
+            }
+            else {
+                serverSentStatusDiv.textContent = 'Error';
+                serverSentTimeDiv.textContent = 'Can\'t connect to server';
+            }
+        });
+
+    </script>
+</body>
+</html>
