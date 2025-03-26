@@ -2,12 +2,12 @@
 
 **Name**: Victor Hanert
 
-01a: [Link](https://example.com/01a)
+01a: [Link](https://github.com/VictorHanert/System-Integration/tree/main/00._Assignments/01a._Data_parsing)
 
-03a: [Link](https://example.com/03a)
+03a: [Link](https://github.com/VictorHanert/System-Integration/tree/main/00._Assignments/03a._Data_parsing_server)
 
-04a: [Link](https://example.com/04a)
+04a: [Link](https://github.com/VictorHanert/System-Integration/tree/main/00._Assignments/04a._SSE_example/01._node)
 
-04b: [Link](https://example.com/04b)
+04b: [Link](https://github.com/VictorHanert/System-Integration/tree/main/00._Assignments/04b._Expose)
 
-06a: [Link](https://example.com/06a)
+06a: [Link](https://github.com/VictorHanert/System-Integration/tree/main/00._Assignments/06a._WebSocket_example/01._node)
