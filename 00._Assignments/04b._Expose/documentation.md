@@ -200,3 +200,5 @@ ngrok tcp 5432
 ```
 Account: Victor (Plan: Free) - need to setup a payment method to get TCP tunnels. - This card will NOT be charged.
 Forwarding: tcp://2.tcp.eu.ngrok.io:10732 -> localhost:5432  
+
+Note: The ngrok URL and port will change each time the server restarts, so ensure that the integrator gets the updated link and port when testing.

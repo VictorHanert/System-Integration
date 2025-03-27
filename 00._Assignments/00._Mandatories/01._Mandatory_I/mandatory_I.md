@@ -1,4 +1,4 @@
-# [Individual] Mandatory I
+# Mandatory I
 
 **Name**: Victor Hanert
 
