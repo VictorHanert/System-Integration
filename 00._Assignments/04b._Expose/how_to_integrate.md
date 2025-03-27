@@ -64,17 +64,28 @@ Each role has different access levels:
 ### Visual Example of Role Access Flow
 
 Below is a simplified visualization of the data access flow:
+
+```plaintext
          ┌────────────────────┐
-         │ confidential_data  │
+         │  confidential_data │
          └────────────────────┘
                 │  
    ┌────────────┼─────────────┬───────────────┐
    │            │             │               │
 Public Data   Read-Only   Read-Write     Restricted Data 
-   │              X            X               X  
-  SELECT          X           Read and Write    X  
+   │              ✖            ✔               ✖  
+  SELECT          ✖           Read/Write       ✖  
    │             
 Public User      NoAccess    ReadWrite User    No Access 
+```
+
+- `✔` indicates access is allowed.
+- `✖` indicates access is denied.
+- Access levels depend on the role and the type of data.
+- Public data is accessible to all users with `SELECT` permissions.
+- Restricted data is inaccessible to all roles except `admin`.
+- Read-Write data allows both reading and writing for the `readwrite_user` role.
+- Read-Only data is not accessible for any role in this example.
 
 
 ### Access Data
