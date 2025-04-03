@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  padding: 1vw;
+  background-color: #f4f4f4;
+  color: #333;
+  flex-direction: column;
+  align-items: center;
+}
+
+#videos {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2vw;
+}
+
+video {
+  background-color: gray;
+  width: auto;
+  height: 30vw;
+}
+
+button#startCall,
+button#answerCall {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: auto;
+}
+
+button#answerCall {
+  background-color: #008CBA;
+}
+
+#buttonContainer {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+  margin-top: 1vw;
+}
