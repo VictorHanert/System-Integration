@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Base64 IMAGES</title>
+
+    <style>
+      .gif {
+        background-image: url(data:image/gif;base64,R0lGODlhCAAHAIABAGSV7f///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAIAAcAAAINjI8BkMq41onRUHljAQA7);
+        background-repeat: no-repeat;
+        height: 5px;
+        width: 10px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="images">
+      <h1>Base64 Images</h1>
+      <p>
+        Base64 is a binary-to-text encoding scheme that represents binary data
+        in an ASCII string format.
+      </p>
+      <p>
+        It is commonly used to embed images directly into HTML or CSS files.
+      </p>
+      <p>
+        Conclusion is that we shall probably not use it. It is only relevant for
+        integrating with systems that have images as Base64.
+      </p>
+
+      <div class="images-container">
+        <div class="gif"></div>
+
+        <img
+          src="
+            data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABIAQMAAABvIyEEAAAABlBMVEUAAABTU1OoaSf/AAAAAXRSTlMAQObYZgAAAGxJREFUeF7tyMEJwkAQRuFf5ipMKxYQiJ3Z2nSwrWwBA0+DQZcdxEOueaePp9+dQZFB7GpUcURSVU66yVNFj6LFICatThZB6r/ko/pbRpUgilY0Cbw5sNmb9txGXUKyuH7eV25x39DtJXUNPQGJtWFV+BT/QAAAAABJRU5ErkJggg=="
+          alt="Chrome Dino"
+        />
+
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
+                //8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+          alt="Red dot"
+        />
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    background-color: #f0f0f0;
+  }
+  .images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .images-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: white;
+    padding: 20px;
+  }
+</style>
