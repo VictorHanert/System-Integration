@@ -5,6 +5,7 @@ dist/
 .vscode/
 .DS_Store
 uploads/
+videos/
 
 ### Node ###
 # Logs
