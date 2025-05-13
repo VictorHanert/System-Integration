@@ -1,0 +1,22 @@
+version: '3'
+services:
+  source-db:
+    image: postgres:latest
+    env_file: .env.source
+    ports:
+      - "5433:5432"
+    volumes:
+      - source_data:/var/lib/postgresql/data
+
+  target-db:
+    image: postgres:latest
+    env_file: .env.target
+    ports:
+      - "5434:5432" 
+    volumes:
+      - target_data:/var/lib/postgresql/data
+
+volumes:
+  source_data:
+  target_data:
+
