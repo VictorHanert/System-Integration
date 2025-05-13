@@ -6,9 +6,7 @@ import Knex from 'knex';
 
 const BATCH_SIZE = 500;
 
-// ───────────────────────────────
 // 1) Parse .env.source + .env.target
-// ───────────────────────────────
 function loadEnv(file) {
   const envPath = path.resolve(process.cwd(), file);
   if (!fs.existsSync(envPath)) {
@@ -21,39 +19,45 @@ function loadEnv(file) {
 const srcEnv    = loadEnv('.env.source');
 const targetEnv = loadEnv('.env.target');
 
-// ───────────────────────────────
-// 2) Build Knex configs
-// ───────────────────────────────
-const sourceConfig = {
-  client: 'pg',
-  connection: {
-    host:     srcEnv.POSTGRES_HOST,
-    port:     Number(srcEnv.POSTGRES_PORT),
-    user:     srcEnv.POSTGRES_USER,
-    password: srcEnv.POSTGRES_PASSWORD,
-    database: srcEnv.POSTGRES_DB,
-  },
-  migrations: { directory: './migrations' },
-  seeds:      { directory: './seeds' },
-  pool:       { min: 0, max: 10 },
-};
+// 2) Helper: Build Knex config
+function createKnexConfig(env) {
+  return {
+    client: 'pg',
+    connection: {
+      host:     env.POSTGRES_HOST,
+      port:     Number(env.POSTGRES_PORT),
+      user:     env.POSTGRES_USER,
+      password: env.POSTGRES_PASSWORD,
+      database: env.POSTGRES_DB,
+    },
+    migrations: { directory: './migrations' },
+    seeds:      { directory: './seeds' },
+    pool:       { min: 0, max: 10 },
+  };
+}
 
-const targetConfig = {
-  client: 'pg',
-  connection: {
-    host:     targetEnv.POSTGRES_HOST,
-    port:     Number(targetEnv.POSTGRES_PORT),
-    user:     targetEnv.POSTGRES_USER,
-    password: targetEnv.POSTGRES_PASSWORD,
-    database: targetEnv.POSTGRES_DB,
-  },
-  migrations: { directory: './migrations' },
-  pool:       { min: 0, max: 10 },
-};
+const sourceConfig = createKnexConfig(srcEnv);
+const targetConfig = createKnexConfig(targetEnv);
 
-// ───────────────────────────────
-// 3) Main migration routine
-// ───────────────────────────────
+// 3) Helper: Migrate one table
+async function migrateTable(src, tgt, tableName) {
+  process.stdout.write(`→ ${tableName}… `);
+  await tgt.raw(`TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE`);
+
+  let offset = 0;
+  while (true) {
+    const rows = await src(tableName)
+      .select('*')
+      .limit(BATCH_SIZE)
+      .offset(offset);
+    if (rows.length === 0) break;
+    await tgt.batchInsert(tableName, rows, BATCH_SIZE);
+    offset += rows.length;
+  }
+  console.log(`done (copied ${offset} rows)`);
+}
+
+// 4) Main migration routine
 async function main() {
   const src = Knex(sourceConfig);
   const tgt = Knex(targetConfig);
@@ -80,21 +84,8 @@ async function main() {
         'knex_migrations_lock'
       ]);
 
-    for (let { table_name } of tables) {
-      process.stdout.write(`→ ${table_name}… `);
-      await tgt.raw(`TRUNCATE TABLE "${table_name}" RESTART IDENTITY CASCADE`);
-
-      let offset = 0;
-      while (true) {
-        const rows = await src(table_name)
-          .select('*')
-          .limit(BATCH_SIZE)
-          .offset(offset);
-        if (rows.length === 0) break;
-        await tgt.batchInsert(table_name, rows, BATCH_SIZE);
-        offset += rows.length;
-      }
-      console.log(`done (copied ${offset} rows)`);
+    for (const { table_name } of tables) {
+      await migrateTable(src, tgt, table_name);
     }
 
     console.log('✅ All tables migrated!');
