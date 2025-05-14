@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 app.post('/webhook', (req, res) => {
-  console.log('Received webhook event:');
+  console.log('Received webhook event:');    
   console.log(JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
 });

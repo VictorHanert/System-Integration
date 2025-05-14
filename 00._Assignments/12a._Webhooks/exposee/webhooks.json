@@ -1,6 +1,10 @@
 [
   {
-    "url": "https://6858-87-52-107-183.ngrok-free.app/webhook",
+    "url": "https://604a-195-249-146-100.ngrok-free.app/webhook",
+    "event": "payment_received"
+  },
+  {
+    "url": "https://9fcb-87-52-107-183.ngrok-free.app/webhook",
     "event": "payment_received"
   }
 ]

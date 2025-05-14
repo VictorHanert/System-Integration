@@ -22,19 +22,19 @@ function saveWebhooks(webhooks) {
 
 app.post('/register', (req, res) => {
   const { url, event } = req.body;
-  if (!url || !event) return res.status(400).json({ error: 'Missing url or event' });
+  if (!url || !event) return res.status(400).json({ error: 'ERROR: Missing url or event' });
   const webhooks = loadWebhooks();
   webhooks.push({ url, event });
   saveWebhooks(webhooks);
-  res.json({ message: 'Webhook registered successfully.' });
+  res.json({ message: 'Registered webhook successfully.' });
 });
 
 app.post('/unregister', (req, res) => {
   const { url, event } = req.body;
-  if (!url || !event) return res.status(400).json({ error: 'Missing url or event' });
+  if (!url || !event) return res.status(400).json({ error: 'ERROR: Missing url or event' });
   const webhooks = loadWebhooks().filter(w => !(w.url === url && w.event === event));
   saveWebhooks(webhooks);
-  res.json({ message: 'Webhook unregistered successfully.' });
+  res.json({ message: 'Unregistered webhook successfully.' });
 });
 
 // Manually trigger test ping to all webhooks
