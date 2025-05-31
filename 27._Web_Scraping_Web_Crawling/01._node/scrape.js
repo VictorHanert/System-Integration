@@ -1,12 +1,7 @@
 import fs from 'fs';
-
-// const response = await fetch("https://www.proshop.dk/Baerbar");
-// const result = await response.text();
-// fs.writeFileSync("index.html", result);
-
 import { load } from 'cheerio'; // package for parsing and manipulating HTML
 
-const page = fs.readFileSync("index.html", "utf-8");
+const page = fs.readFileSync("proshop.html", "utf-8");
 
 const $ = load(page);
 
@@ -18,3 +13,4 @@ $("#products [product]").each((index, element) => {
     console.log(nameAndDescription.trim());
     console.log("=".repeat(50));
 });
+
