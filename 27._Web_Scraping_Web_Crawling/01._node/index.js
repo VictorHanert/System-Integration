@@ -4,15 +4,17 @@ import fs from 'fs';
 // const result = await response.text();
 // fs.writeFileSync("index.html", result);
 
-import { load } from 'cheerio';
+import { load } from 'cheerio'; // package for parsing and manipulating HTML
 
-const page = await fs.readFileSync("index.html", "utf-8");
+const page = fs.readFileSync("index.html", "utf-8");
 
 const $ = load(page);
 
 $("#products [product]").each((index, element) => {
-    const name = $(element).find(".site-product-link").text();
     const price = $(element).find(".site-currency-lg").text();
+    const nameAndDescription = $(element).find(".site-product-link").text();
 
-    console.log(price, name.trim());
+    console.log(price);
+    console.log(nameAndDescription.trim());
+    console.log("=".repeat(50));
 });
