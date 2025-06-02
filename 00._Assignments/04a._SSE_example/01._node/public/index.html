@@ -23,12 +23,14 @@
         const serverSentStatusDiv = document.getElementById('server-sent_status');
         const serverSentTimeDiv = document.getElementById('server-sent_time');
 
-        const eventSource = new EventSource('/synctime');
+        const eventSource = new EventSource('/synctime'); // Serverens SSE-endpoint
 
+        // Opdater visning når nyt "message"-event modtages
         eventSource.addEventListener("message", (event) => {
             serverSentTimeDiv.textContent = event.data;
         });
 
+        // Når forbindelsen åbnes første gang
         eventSource.addEventListener("open", (event) => {
             serverSentStatusDiv.textContent = 'Connected ✅';
         });

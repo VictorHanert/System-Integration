@@ -4,6 +4,8 @@ import yaml from "js-yaml";
 import xml2js from "xml2js";
 import morgan from "morgan";
 
+// Når “local=true” læses og parses datafiler fra disk og ellers hentes svaret fra Python-serveren
+
 const PORT = 3000;
 const SERVER_URL = "http://127.0.0.1:8000";
 const DATA_FOLDER = "../generated_files";

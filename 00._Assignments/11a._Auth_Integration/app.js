@@ -23,7 +23,7 @@ const config = {
     }
   };
 
-app.use(auth(config));
+app.use(auth(config)); // express-openid-connect middleware 
 
 // Public route
 app.get('/', (req, res) => {
@@ -33,8 +33,8 @@ app.get('/', (req, res) => {
       <p>Welcome ${req.oidc.user.name}</p>
       <a href="/profile">Profile</a> |
       <a href="/logout">Logout</a>
-    ` : `<a href="/login">Login</a>`}
-  `);
+    ` : `<a href="/login">Login</a>`}  
+  `); // /login and /logout are handled by express-openid-connect
 });
 
 // Protected route

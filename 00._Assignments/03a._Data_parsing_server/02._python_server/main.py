@@ -8,7 +8,6 @@ from pathlib import Path
 
 app = FastAPI()
 
-# Adjust these to match your environment
 NODE_SERVER_URL = "http://127.0.0.1:3000"  # Node.js server
 DATA_FOLDER = Path("../generated_files")  # Common folder for data files
 
