@@ -8,15 +8,15 @@ services:
     volumes:
       - source_data:/var/lib/postgresql/data
 
-  target-db:
-    image: postgres:latest
-    env_file: .env.target
+  mysql-db:
+    image: mysql:8.0
+    env_file: .env.mysql
     ports:
-      - "5434:5432" 
+      - "3306:3306"
+    command: ["--default-authentication-plugin=mysql_native_password"]
     volumes:
-      - target_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
 
 volumes:
   source_data:
-  target_data:
-
+  mysql_data:

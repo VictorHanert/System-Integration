@@ -1,101 +1,123 @@
 #!/usr/bin/env node
-import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import Knex from 'knex';
 
+// Antal rækker per batch ved indsættelse
 const BATCH_SIZE = 500;
 
-// 1) Parse .env.source + .env.target
-function loadEnv(file) {
-  const envPath = path.resolve(process.cwd(), file);
-  if (!fs.existsSync(envPath)) {
-    console.error(`❌ Could not find ${file} in ${process.cwd()}`);
-    process.exit(1);
-  }
-  return dotenv.parse(fs.readFileSync(envPath));
+// 1) .env for Postgres og MySQL
+dotenv.config({ path: path.resolve(process.cwd(), '.env.source') });
+const pgEnv = process.env;
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.target') });
+const myEnv = process.env;
+
+// 2) Type‐mapping fra Postgres → MySQL
+const TYPE_MAP = {
+  int2:      'SMALLINT',
+  int4:      'INT',
+  int8:      'BIGINT',
+  numeric:   'DECIMAL(38,10)',
+  bool:      'TINYINT(1)',
+  text:      'TEXT',
+  varchar:   'VARCHAR(255)',
+  bpchar:    'CHAR(1)',
+  date:      'DATE',
+  timestamp: 'DATETIME',
+  timestamptz:'DATETIME',
+  json:      'JSON',
+  jsonb:     'JSON',
+};
+
+// 3) Opret Knex‐forbindelser
+const pg = Knex({
+  client: 'pg',
+  connection: {
+    host:     pgEnv.POSTGRES_HOST,
+    port:     Number(pgEnv.POSTGRES_PORT),
+    user:     pgEnv.POSTGRES_USER,
+    password: pgEnv.POSTGRES_PASSWORD,
+    database: pgEnv.POSTGRES_DB,
+  },
+});
+
+const mysql = Knex({
+  client: 'mysql2',
+  connection: {
+    host:     myEnv.MYSQL_HOST,
+    port:     Number(myEnv.MYSQL_PORT),
+    user:     myEnv.MYSQL_USER,
+    password: myEnv.MYSQL_PASSWORD,
+    database: myEnv.MYSQL_DATABASE,
+  },
+});
+
+// Byg CREATE TABLE DDL for MySQL ud fra Postgres‐kolonnedata
+function buildCreateTableDDL(tableName, columns) {
+  // columns = array af objekter: { column_name, udt_name, is_nullable }
+  const colLines = columns.map(col => {
+    const mysqlType = TYPE_MAP[col.udt_name] || 'TEXT';
+    const nullSpec  = col.is_nullable === 'NO' ? 'NOT NULL' : 'NULL';
+    return `\`${col.column_name}\` ${mysqlType} ${nullSpec}`;
+  });
+  return `CREATE TABLE IF NOT EXISTS \`${tableName}\` (${colLines.join(', ')});`;
 }
 
-const srcEnv    = loadEnv('.env.source');
-const targetEnv = loadEnv('.env.target');
+// Kopier tabel fra Postgres til MySQL
+async function copyTable(tableName) {
+  console.log(`\n▶ Migrating table: ${tableName}`);
 
-// 2) Helper: Build Knex config
-function createKnexConfig(env) {
-  return {
-    client: 'pg',
-    connection: {
-      host:     env.POSTGRES_HOST,
-      port:     Number(env.POSTGRES_PORT),
-      user:     env.POSTGRES_USER,
-      password: env.POSTGRES_PASSWORD,
-      database: env.POSTGRES_DB,
-    },
-    migrations: { directory: './migrations' },
-    seeds:      { directory: './seeds' },
-    pool:       { min: 0, max: 10 },
-  };
-}
+  // Hent kolonnemetadata fra Postgres
+  const columns = await pg
+    .select('column_name', 'udt_name', 'is_nullable')
+    .from('information_schema.columns')
+    .where({ table_name: tableName, table_schema: 'public' });
 
-const sourceConfig = createKnexConfig(srcEnv);
-const targetConfig = createKnexConfig(targetEnv);
+  // Opret table i MySQL, if dont exists
+  const createDDL = buildCreateTableDDL(tableName, columns);
+  await mysql.raw(createDDL);
+  await mysql.raw(`TRUNCATE TABLE \`${tableName}\`;`); // slet for at sikre, at tabellen er tom
 
-// 3) Helper: Migrate one table
-async function migrateTable(src, tgt, tableName) {
-  process.stdout.write(`→ ${tableName}… `);
-  await tgt.raw(`TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE`);
-
+  // Hent og indsæt data i batches
   let offset = 0;
   while (true) {
-    const rows = await src(tableName)
-      .select('*')
-      .limit(BATCH_SIZE)
-      .offset(offset);
+    const rows = await pg.select('*')
+                     .from(tableName)
+                     .limit(BATCH_SIZE)
+                     .offset(offset);
+
     if (rows.length === 0) break;
-    await tgt.batchInsert(tableName, rows, BATCH_SIZE);
+
+    await mysql.batchInsert(tableName, rows, BATCH_SIZE);
     offset += rows.length;
+    process.stdout.write(`copied ${offset} rows\r`);
   }
-  console.log(`done (copied ${offset} rows)`);
 }
 
-// 4) Main migration routine
-async function main() {
-  const src = Knex(sourceConfig);
-  const tgt = Knex(targetConfig);
-
+// Main function: find alle tabeller og migrate dem
+(async () => {
   try {
-    console.log('🔧 Running SOURCE migrations…');
-    await src.migrate.latest();
-
-    console.log('🌱 Running SOURCE seeds…');
-    await src.seed.run();
-
-    console.log('🔧 Running TARGET migrations…');
-    await tgt.migrate.latest();
-
-    console.log('📦 Copying data from SOURCE → TARGET…');
-    const tables = await src('information_schema.tables')
+    // Hent alle base tables fra Postgres
+    const tables = await pg
       .select('table_name')
-      .where({
-        table_schema: 'public',
-        table_type:   'BASE TABLE',
-      })
-      .whereNotIn('table_name', [
-        'knex_migrations',
-        'knex_migrations_lock'
-      ]);
+      .from('information_schema.tables')
+      .where({ table_schema: 'public', table_type: 'BASE TABLE' });
 
+    // For hver tabel: migrer
     for (const { table_name } of tables) {
-      await migrateTable(src, tgt, table_name);
+      // Spring migra­tion‐tabeller og sparket metadata over, hvis du vil
+      if (table_name === 'knex_migrations' || table_name === 'knex_migrations_lock') {
+        continue;
+      }
+      await copyTable(table_name);
     }
-
-    console.log('✅ All tables migrated!');
+    console.log('\n All tables migrated successfully!');
   } catch (err) {
-    console.error('❌ Migration failed:', err);
-    process.exitCode = 1;
+    console.error('Migration error:', err);
   } finally {
-    await src.destroy();
-    await tgt.destroy();
+    await pg.destroy();
+    await mysql.destroy(); // Luk forbindelser
+    process.exit(0);
   }
-}
-
-main();
+})();

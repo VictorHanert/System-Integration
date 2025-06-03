@@ -1,32 +1,24 @@
 ## Formål
-Migrer brugerdata fra én PostgreSQL-database til en anden ved hjælp af Node.js og Knex.js.
+Migrer brugerdata fra én PostgreSQL-database til MySql ved hjælp af Node.js og Knex.js.
+
+1. Docker og Docker Compose installeret.
+2. Node.js (v16+) og `npm` installeret.
 
 ## Struktur
-- **.env.source**: Definerer kilde-databasen (`sourcedb` på port 5433)
-- **.env.target**: Definerer mål-databasen (`targetdb` på port 5434)
-- **docker-compose.yml**: Starter begge databaser med named volumes
-- **seed-source.js**: Opretter og fylder `sourcedb.users` med testdata
-- **migrate.js**:
-    - Læser begge `.env`-filer separat
-    - Sikrer at `users`-tabellen findes i `targetdb`
-    - Kopierer alle rækker fra `sourcedb.users` til `targetdb.users`
+- `.env.source` – kilde‐Postgres (port 5433)
+- `.env.mysql` – mål‐MySQL (port 3306)
+- `docker-compose.yml` – starter begge databaser
+- `src/migrate.js` – script til at migrere alle tabeller
 
-Efter migreringen indeholder begge databaser en `users`-tabel med 3 brugere.
-
-# Docker-compose
-docker-compose down -v 	# “-v” deletes the named volumes so the DB init runs again
+## Start databaserne
+docker-compose down -v
 docker-compose up -d
 
-#  Verify you can connect manually once they’re up:
-psql -h localhost -p 5433 -U myuser -d sourcedb
-psql -h localhost -p 5434 -U myuser -d targetdb
-
-These commands will connect to the source and target databases, respectively. 
-You can use the `\l` command in psql to list all databases and verify that you are connected to the correct one.
+## Seed testdata:
+npx knex seed:run --env source
 
 # Run migration
 npm run migrate
 
-This command will run the migration script defined in your package.json file.
-"migrate": "node src/migrate.js"
-
+## Eksempel på migration
+![Eksempel på migration](migrating_example.png)

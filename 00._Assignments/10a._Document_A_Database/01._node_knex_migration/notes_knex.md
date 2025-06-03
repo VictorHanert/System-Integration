@@ -8,6 +8,7 @@ The migration scripts reflect the current state of the schema and how it evolved
 Schema migration (DDL)
 Data migration / Seeding (DML)
 
+Schema migration refers to changes in the database structure.
 Data migration usually refers to moving data from one database to another.
 Seeding is the process of populating a database with data, usually a new database.
 
